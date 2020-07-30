@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>小天使班 - 記憶遊戲</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" href="memory_game.css">
+</head>
+<body>
+
+    <audio id="audioWonGame" src="sounds/clap.mp3" preload="auto"></audio>
+    <audio id="audioFound" src="sounds/desk_bell.mp3" preload="auto"></audio>
+    <audio id="audioWrong" src="sounds/door_buzzer.mp3" preload="auto"></audio>
+<h1 class="gameTitle">小天使班 - 記憶遊戲</h1>
+
+<div class="infoRow">
+    <span id="resetButton"><i class="fas fa-undo"></i></span>
+    <span id="message">&nbsp;</span>
+    <span id="gameTime"><i class="fas fa-stopwatch"></i><span id="timeTaken">--</span></span>
+    <span id="bestGameTime"><i class="fas fa-trophy"></i><span id="bestTimeTaken">--</span></span>
+</div>
+<div class="gameContainer">
+<div class="gameBoard">
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>   
+</div>
+</div>
+
+<script src="memory_game.js"></script>
+</body>
+</html>
