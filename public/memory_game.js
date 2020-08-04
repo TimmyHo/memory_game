@@ -10,26 +10,59 @@ let icons = [
     '<i class="fas fa-hippo"></i>',
     '<i class="fas fa-hiking"></i>',
     '<i class="fas fa-monument"></i>',
-    '<i class="far fa-money-bill-alt"></i>'
+    '<i class="far fa-money-bill-alt"></i>',
+    
+    '<i class="fas fa-podcast"></i>',
+    '<i class="fas fa-bowling-ball"></i>',
+    '<i class="fas fa-chalkboard-teacher"></i>',
+    '<i class="fas fa-bug"></i>',
+    '<i class="fas fa-brain"></i>',
+    '<i class="fas fa-microscope"></i>',
+    '<i class="fas fa-meteor"></i>',
+    '<i class="far fa-meh"></i>',
+    '<i class="fas fa-seedling"></i>',
+    '<i class="far fa-sad-cry"></i>'
 ]
 
 let selectedCards = []
 let isFound = []
 let numFound = 0;
+
+let gameStarted = false;
 let wonGame = false;
 let isShowing = false;
+
 
 let message = document.querySelector('#message')
 let audioFound = document.querySelector('#audioFound');
 let audioWrong = document.querySelector('#audioWrong');
 let audioWonGame = document.querySelector('#audioWonGame');
+let isPlayingAudio = false;
+let isSoundEnabled = true;
 
-
-let timeTakenValue = 0;
-let timeTaken = document.querySelector('#timeTaken');
-let bestTimeValue;
 let stopwatch;
-let gameStarted = false;
+let timeTaken = document.querySelector('#timeTaken');
+let timeTakenInMs = 0;
+let bestTimeValue;
+
+
+function generateArrWithRandomInd(arrLen, numRand) {
+    numsToPick = []
+    for (let i = 0; i < numRand; i++) {
+        numsToPick.push(i);
+    }
+
+    arr = []
+    for (let i = 0; i < arrLen; i++) {
+        let ind = Math.floor(Math.random() * numsToPick.length);
+        arr.push(numsToPick[ind]);
+        numsToPick.splice(ind,1);
+    }
+
+    return arr;
+}
+
+// Given an array ie: [1,2,3,4,5], randomize it so it is like [3,1,5,4,2]
 function randomizeArray(arr) {
     newArr = []
     while (arr.length > 0) {
@@ -40,22 +73,47 @@ function randomizeArray(arr) {
     return newArr;
 }
 
-arrInd = []
-for (let i = 0; i < 20; i++) {
-    arrInd[i] = i % 10
+function resetGame() {
+    message.innerHTML = "&nbsp;";
+
+    timeTakenInMs = 0;
+    timeTaken.innerHTML = "--";
+    
+    bestGameTime.classList.remove('newBestTime');
+
+    if (isSoundEnabled) {
+        stopAudio();
+    }
+
+    newMemoryGame();
+
 }
 
-newArr = randomizeArray(arrInd);
+function newMemoryGame() {
+    resetGameBoard();
 
-for (let i =0; i < cards.length; i++) {
-    cards[i].innerHTML = icons[newArr[i]];
+    wonGame = false;
+    gameStarted = false;
+
+    arrInd = generateArrWithRandomInd(cards.length / 2, icons.length);
+    // want to have 2 of each card
+    arrInd = arrInd.concat([...arrInd]);
+
+    // for (let i = 0; i < cards.length; i++) {
+    //     arrInd[i] = i % (cards.length / 2)
+    // }
+
+    newArr = randomizeArray(arrInd);    
+
+    for (let i = 0; i < cards.length; i++) {
+        cards[i].innerHTML = icons[newArr[i]];
+    }
 }
-    
 
+function resetGameBoard() {
+    selectedCards = [];
+    numFound = 0;
 
-document.querySelector('#resetButton').addEventListener("click",function() {
-    selectedCards = []
-    
     for (let i = 0; i < isFound.length; i++) {
         isFound[i] = false
     }
@@ -64,58 +122,100 @@ document.querySelector('#resetButton').addEventListener("click",function() {
         cards[i].classList.remove('selected');
         cards[i].classList.remove('found');
     }
-    message.innerHTML = "&nbsp;";
-    wonGame = false;
-    numFound = 0;
 
-    timeTakenValue = 0.0;
-    timeTaken.innerHTML = "--";
-    gameStarted = false;
-
-    arrInd = []
-for (let i = 0; i < 20; i++) {
-    arrInd[i] = i % 10
+    clearInterval(stopwatch);
 }
 
-newArr = randomizeArray(arrInd);
-
-for (let i =0; i < cards.length; i++) {
-    cards[i].innerHTML = icons[newArr[i]];
-}
-    
-clearInterval(stopwatch);
-
-})
-
-for (let i = 0; i < cards.length; i++) {
-    cards[i].id = i;
-
-    isFound[i] = false;
-
-    cards[i].addEventListener("click", function(event) {
-        if (!wonGame && !gameStarted) {
-            stopwatch = setInterval(function() {
-                timeTakenValue =  (timeTakenValue+1);
-                timeTaken.textContent = (timeTakenValue / 10).toFixed(1);
-            }, 100);
-            gameStarted = true;
+function playFoundAudio() {
+    audioFound.play();
+    isPlayingAudio = true;
+    setTimeout(function() {
+        if (isPlayingAudio) {
+            audioFound.pause();
+            audioFound.currentTime = 0;
+            isPlayingAudio = false;
         }
-        if (!wonGame && isFound[this.id] !== true &&
-            (selectedCards === 0 || selectedCards[0] !== this.id)) {
+    },
+    1000);
+}
 
-            if (isShowing === true) {
-                    audioWrong.pause();
-                    audioWrong.currentTime = 0;
-                    
-                    isShowing = false;
-                    for (let k = 0; k < selectedCards.length; k++) {
-                
-                        cards[selectedCards[k]].classList.remove('selected');
-                   
-                }
-    
-                selectedCards = [];
-            }
+function playWrongAudio() {
+    audioWrong.play();
+    isPlayingAudio = true;
+
+    setTimeout(function() {
+        if (isPlayingAudio) {
+            audioWrong.pause();
+            audioWrong.currentTime = 0;
+            isPlayingAudio = false;
+        }
+    }, 500);
+}
+
+function playWonGameAudio() {
+    audioWonGame.play();
+    isPlayingAudio = true; 
+        
+    // setTimeout(function() {
+    //     audioWonGame.pause();
+    //     audioWonGame.currentTime = 0;
+    // },
+    // 1000);  
+}
+
+function stopAudio() {
+    isPlayingAudio = false;
+    audioFound.pause();
+    audioFound.currentTime = 0;
+    audioWrong.pause();
+    audioWrong.currentTime = 0;
+    audioWonGame.pause();
+    audioWonGame.currentTime = 0;
+}
+
+function startGameTimer() {
+    stopwatch = setInterval(function() {
+        timeTakenInMs += 100;
+        timeTaken.textContent = (timeTakenInMs / 1000).toFixed(1);
+    }, 100);
+    gameStarted = true;
+}
+
+function setNewBestTime() {
+    bestTimeValue = timeTakenInMs;
+    bestTimeTaken.innerHTML = (bestTimeValue / 1000).toFixed(1);
+    bestGameTime.classList.add('newBestTime');
+}
+
+function clearShowingCards() {
+    if (isShowing) {
+        isShowing = false;
+
+        for (let k = 0; k < selectedCards.length; k++) {                    
+            cards[selectedCards[k]].classList.remove('selected');
+        }
+
+        selectedCards = [];
+    }
+}
+
+function clickCardEvent(event) {
+    if (!gameStarted) {
+        startGameTimer();
+    }
+
+    if (!wonGame && 
+        isFound[this.id] !== true && // if the card is already found
+        // if the card is not selected
+        (selectedCards === 0 || selectedCards[0] !== this.id)) {
+
+        if (isShowing) {
+            clearShowingCards();
+        }
+
+        if (isPlayingAudio) {
+            stopAudio();
+        }
 
         selectedCards.push(this.id);
         message.innerHTML = "&nbsp;";
@@ -130,69 +230,55 @@ for (let i = 0; i < cards.length; i++) {
 
         this.classList.add('selected');
         if (isMatch === false) {
-            message.innerHTML = "可惜不一樣 :(";
             isShowing = true;
-            audioWrong.play();
+            message.innerHTML = "可惜不一樣 :(";
 
-            setTimeout(function() {
-                    audioWrong.pause();
-                    audioWrong.currentTime = 0;
-    
-            }, 500)
-            setTimeout(function() {
-                if (isShowing) {
-                isShowing = false;
-
-            for (let k = 0; k < selectedCards.length; k++) {
-                
-                    cards[selectedCards[k]].classList.remove('selected');
-               
+            if (isSoundEnabled) {
+                playWrongAudio();
             }
 
-            selectedCards = [];
-        }
-        }, 1000);
+            setTimeout(clearShowingCards, 1000);
         } else {
             if (selectedCards.length === 2) {
-                cards[selectedCards[0]].classList.add('found');
-                cards[selectedCards[0]].classList.remove('selected');
+                for(let k = 0; k < selectedCards.length; k++) {
+                    cards[selectedCards[k]].classList.add('found');
+                    cards[selectedCards[k]].classList.remove('selected');
+                    isFound[selectedCards[k]] = true;
+                    numFound += 1
+                }
                 
-                cards[selectedCards[1]].classList.add('found');
-                cards[selectedCards[1]].classList.remove('selected');
-                
-                isFound[selectedCards[0]] = true;
-                isFound[selectedCards[1]] = true;
-                numFound += 2;
                 selectedCards = [];
-                if (numFound === 20) {
+                if (numFound === cards.length) {
                     wonGame = true;
                     message.innerHTML = "恭喜完成!!"
-                    audioWonGame.play();
-                    // setTimeout(function() {
-                    //     audioFound.pause();
-                    //     audioFound.currentTime = 0;
-                    // },
-                    // 1000);
+
+                    if (isSoundEnabled) {
+                        playWonGameAudio();
+                    }
                     clearInterval(stopwatch);
                     
-                    if (!bestTimeValue || timeTakenValue < bestTimeValue) {
-                        bestTimeValue = timeTakenValue;
-                        bestTimeTaken.innerHTML = (bestTimeValue / 10).toFixed(1);
+                    if (!bestTimeValue || timeTakenInMs < bestTimeValue) {
+                        setNewBestTime();
                     }
                 }
                 else {
                     message.innerHTML = "你好棒棒！"
-                    audioFound.play();
-                    setTimeout(function() {
-                        audioFound.pause();
-                        audioFound.currentTime = 0;
-                    },
-                    1000);
-                }
 
+                    if (isSoundEnabled) {
+                        playFoundAudio();
+                    }
+                }
             }
         }
-        } 
-
-    })
+    }
 }
+
+
+document.querySelector('#resetButton').addEventListener("click", resetGame);
+
+for (let i = 0; i < cards.length; i++) {
+    cards[i].id = i;
+    cards[i].addEventListener("click", clickCardEvent);
+}
+
+resetGame();

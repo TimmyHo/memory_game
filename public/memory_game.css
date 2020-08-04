@@ -13,12 +13,12 @@ body {
     margin: 0;
 }
 
-
 .gameTitle {
     text-align: center;
     font-size: 2.5rem;
     color: white;
     margin: 15px 0;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 .infoRow {
@@ -44,10 +44,9 @@ body {
     background: lightyellow;
     display: inline-block;
 
-    width:400px;
+    width: 400px;
     color: slategray;
 
-    
     border: 2px solid black;
     margin-left: 25px;
 }
@@ -60,7 +59,7 @@ body {
     width:100px;
 }
 #timeTaken {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 #bestGameTime {
@@ -70,10 +69,16 @@ body {
     border: 2px solid black;
     width:100px;
 }
+
 #bestTimeTaken {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
+#bestGameTime.newBestTime {
+    color: gold;
+    background: darkgray;
+    border: 2px solid gold;
+}
 
 .gameTable {
     width: 100%
@@ -121,7 +126,7 @@ td {
         max-height: 200px;
         max-width: 200px;
     }
-  }
+}
 
 
 .card {
@@ -136,7 +141,7 @@ td {
 
     font-size: 10vmin;
     border: 3px solid black;
-    border-radius:50%;
+    border-radius: 33.3%;
 }
 
 
