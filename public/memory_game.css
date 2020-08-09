@@ -136,6 +136,10 @@ td {
         max-height: 200px;
         max-width: 200px;
     }
+
+    #message {
+        display:none;
+    }
 }
 
 

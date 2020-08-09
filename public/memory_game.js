@@ -40,6 +40,8 @@ let audioWonGame = document.querySelector('#audioWonGame');
 let cancelAudioPlayback = false;
 let isSoundEnabled = true;
 
+let clearShowingCardsTimeout;
+
 let stopwatch;
 let timeTaken = document.querySelector('#timeTaken');
 let timeTakenInMs = 0;
@@ -133,7 +135,6 @@ function playFoundAudio() {
     cancelAudioPlayback = false;
     audioFound.play();
     
-    console.log('Found Audio Sound: ' + isPlayingAudio);
     setTimeout(function() {
     
         if (!cancelAudioPlayback) {
@@ -151,7 +152,6 @@ function playWrongAudio() {
         if (!cancelAudioPlayback) {
             audioWrong.pause();
             audioWrong.currentTime = 0;
-            isPlayingAudio = false;
         }
     }, 500);
 }
@@ -175,8 +175,6 @@ function stopAudio() {
     audioWonGame.pause();
     audioWonGame.currentTime = 0;
     cancelAudioPlayback = true;
-
-    console.log('Stop Sound: '+isPlayingAudio)
 }
 
 function startGameTimer() {
@@ -194,15 +192,13 @@ function setNewBestTime() {
 }
 
 function clearShowingCards() {
-    if (isShowing) {
-        isShowing = false;
+    isShowing = false;
 
-        for (let k = 0; k < selectedCards.length; k++) {                    
-            cards[selectedCards[k]].classList.remove('selected');
-        }
-
-        selectedCards = [];
+    for (let k = 0; k < selectedCards.length; k++) {                    
+        cards[selectedCards[k]].classList.remove('selected');
     }
+
+    selectedCards = [];
 }
 
 function clickCardEvent(event) {
@@ -213,15 +209,15 @@ function clickCardEvent(event) {
     if (!wonGame && 
         isFound[this.id] !== true && // if the card is already found
         // if the card is not selected
-        (selectedCards === 0 || selectedCards[0] !== this.id)) {
+        (selectedCards === 0 || selectedCards[0] !== this.id)) {    
 
-        console.log('Card Click Status: ' + isPlayingAudio)
         if (isSoundEnabled) {
             stopAudio();
             cancelAudioPlayback = true;
         }
 
         if (isShowing) {
+            clearInterval(clearShowingCardsTimeout)
             clearShowingCards();
         }
 
@@ -246,7 +242,7 @@ function clickCardEvent(event) {
                 playWrongAudio();
             }
 
-            setTimeout(clearShowingCards, 1000);
+            clearShowingCardsTimeout = setTimeout(clearShowingCards, 1000);
         } else {
             if (selectedCards.length === 2) {
                 for(let k = 0; k < selectedCards.length; k++) {
