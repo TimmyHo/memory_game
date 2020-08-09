@@ -1,5 +1,6 @@
 html {
     height: 100%;
+    overflow: hidden;
 }
 
 html.wf-loading * {
@@ -7,10 +8,11 @@ html.wf-loading * {
 }
 
 body {
-    height: 100%;
+    height: 90%;
     font-family: 'Noto Sans TC', sans-serif;
     background: lightblue;
     margin: 0;
+    padding: 0;
 }
 
 .gameTitle {
@@ -25,7 +27,6 @@ body {
     vertical-align: top;
     text-align: center;
     margin-bottom: 20px;
-
     
     line-height: 40px;
     height: 40px;
@@ -36,16 +37,15 @@ body {
     display: inline-block;
     padding: 0 20px; 
     background: yellow;
-    width: 30px;
+    width: 20px;
     border: 2px solid black;  
 }
-
 
 #resetButton {
     display: inline-block;
     padding: 0 20px; 
     background: skyblue;
-    
+    width: 20px;
     border: 2px solid black;
     margin-left: 25px;
 }
@@ -54,7 +54,7 @@ body {
     background: lightyellow;
     display: inline-block;
 
-    width: 200px;
+    width: 300px;
     color: slategray;
 
     border: 2px solid black;
@@ -64,10 +64,11 @@ body {
 #gameTime {
     display: inline-block;
     background: orange;
-    margin-left:25px;
+    margin-left: 25px;
     border: 2px solid black;
-    width: 100px;
+    width: 90px;
 }
+
 #timeTaken {
     margin-left: 10px;
 }
@@ -75,9 +76,9 @@ body {
 #bestGameTime {
     display: inline-block;
     background: gray;
-    margin-left:25px;
+    margin-left: 25px;
     border: 2px solid black;
-    width:100px;
+    width: 90px;
 }
 
 #bestTimeTaken {
@@ -91,7 +92,7 @@ body {
 }
 
 .gameTable {
-    width: 100%
+    width: 100%;
 } 
 
 td {
@@ -99,7 +100,7 @@ td {
     text-align: center;
 }
 .gameContainer {
-    height: 80%;
+    height: 90%;
     width: 100%;
     /* background: orangered; */
     display: flex;
@@ -138,7 +139,29 @@ td {
     }
 
     #message {
-        display:none;
+        display: none;
+        margin: 0px;
+    }
+
+    #resetButton {
+        margin-left: 3px;
+    }
+
+    #gameTime {
+        margin-left: 3px;
+    }
+
+    #bestGameTime {
+        margin-left: 3px;
+    }
+
+    
+    .gameTitle {
+        margin: 5px 0;
+    }
+
+    .infoRow {
+        margin-bottom: 5px;
     }
 }
 
