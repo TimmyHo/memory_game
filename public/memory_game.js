@@ -37,13 +37,16 @@ let message = document.querySelector('#message')
 let audioFound = document.querySelector('#audioFound');
 let audioWrong = document.querySelector('#audioWrong');
 let audioWonGame = document.querySelector('#audioWonGame');
-let isPlayingAudio = false;
+let cancelAudioPlayback = false;
 let isSoundEnabled = true;
 
 let stopwatch;
 let timeTaken = document.querySelector('#timeTaken');
 let timeTakenInMs = 0;
 let bestTimeValue;
+
+let soundButton = document.querySelector('#soundButton')
+let resetButton = document.querySelector('#resetButton')
 
 
 function generateArrWithRandomInd(arrLen, numRand) {
@@ -84,9 +87,9 @@ function resetGame() {
     if (isSoundEnabled) {
         stopAudio();
     }
+    updateSoundIcon();
 
     newMemoryGame();
-
 }
 
 function newMemoryGame() {
@@ -127,24 +130,25 @@ function resetGameBoard() {
 }
 
 function playFoundAudio() {
+    cancelAudioPlayback = false;
     audioFound.play();
-    isPlayingAudio = true;
+    
+    console.log('Found Audio Sound: ' + isPlayingAudio);
     setTimeout(function() {
-        if (isPlayingAudio) {
+    
+        if (!cancelAudioPlayback) {
             audioFound.pause();
             audioFound.currentTime = 0;
-            isPlayingAudio = false;
         }
     },
     1000);
 }
 
 function playWrongAudio() {
+    cancelAudioPlayback = false;
     audioWrong.play();
-    isPlayingAudio = true;
-
     setTimeout(function() {
-        if (isPlayingAudio) {
+        if (!cancelAudioPlayback) {
             audioWrong.pause();
             audioWrong.currentTime = 0;
             isPlayingAudio = false;
@@ -153,8 +157,8 @@ function playWrongAudio() {
 }
 
 function playWonGameAudio() {
+    cancelAudioPlayback = false;
     audioWonGame.play();
-    isPlayingAudio = true; 
         
     // setTimeout(function() {
     //     audioWonGame.pause();
@@ -164,13 +168,15 @@ function playWonGameAudio() {
 }
 
 function stopAudio() {
-    isPlayingAudio = false;
-    audioFound.pause();
-    audioFound.currentTime = 0;
     audioWrong.pause();
     audioWrong.currentTime = 0;
+    audioFound.pause();
+    audioFound.currentTime = 0;
     audioWonGame.pause();
     audioWonGame.currentTime = 0;
+    cancelAudioPlayback = true;
+
+    console.log('Stop Sound: '+isPlayingAudio)
 }
 
 function startGameTimer() {
@@ -209,13 +215,16 @@ function clickCardEvent(event) {
         // if the card is not selected
         (selectedCards === 0 || selectedCards[0] !== this.id)) {
 
+        console.log('Card Click Status: ' + isPlayingAudio)
+        if (isSoundEnabled) {
+            stopAudio();
+            cancelAudioPlayback = true;
+        }
+
         if (isShowing) {
             clearShowingCards();
         }
 
-        if (isPlayingAudio) {
-            stopAudio();
-        }
 
         selectedCards.push(this.id);
         message.innerHTML = "&nbsp;";
@@ -274,7 +283,21 @@ function clickCardEvent(event) {
 }
 
 
-document.querySelector('#resetButton').addEventListener("click", resetGame);
+function toggleSound() {
+    isSoundEnabled = !isSoundEnabled;
+    updateSoundIcon();
+}
+function updateSoundIcon() {
+    if (isSoundEnabled) {
+        soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+    }
+    else {
+        soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+
+resetButton.addEventListener("click", resetGame);
 
 for (let i = 0; i < cards.length; i++) {
     cards[i].id = i;
@@ -282,3 +305,5 @@ for (let i = 0; i < cards.length; i++) {
 }
 
 resetGame();
+
+soundButton.addEventListener("click", toggleSound);
