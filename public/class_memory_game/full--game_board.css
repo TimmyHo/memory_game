@@ -22,7 +22,7 @@
     background: pink;
     
     border: 3px solid black;
-    border-radius: 33.3%;
+    /* border-radius: 33.3%; */
 
     margin: auto auto;
 
@@ -31,7 +31,7 @@
     align-items: center;
     font-size: 10vmin;
 
-    /* color: pink; */
+    color: pink;
 }
 
 .selected {

@@ -1,5 +1,10 @@
 const states = {
+    // start with nothing
+    // use done-main_title.css
     STEP0__default: 0,
+    // add in gameboard row
+    // (modify the look)
+    // use done-gameboard.css
     STEP1__show_card_icons: 1,
     STEP2__fill_all_cards_with_icons: 2,
     STEP3__randomize_card_icons: 3,
@@ -9,12 +14,21 @@ const states = {
     STEP7__add_win_condition: 7,
     STEP8__add_click_card_checks: 8,
 
+    // add in inforow and message
     STEP9__add_message: 9,
+    // add in reset button
     STEP10__add_reset_button: 10,
     STEP11__reset_clears_board_classes: 11,
+    // add in timer display
     STEP12__add_timer_button: 12,
+    // add in best time display
     STEP13__add_best_time: 13,
+    // just play
+    // then add in sound button
     STEP14__add_sound: 14
+
+    // use full-*.css
+    // upload to heroku
 }
 
 let currentState = states.STEP14__add_sound;
@@ -53,16 +67,16 @@ let icons = [
 ]
 
 icons = [
-    '<i class="fas fa-horse"></i>',
-    '<i class="fab fa-facebook-square"></i>',
-    '<i class="fas fa-bicycle"></i>',
-    '<i class="fas fa-bus"></i>',
-    '<i class="fas fa-fighter-jet"></i>',
+    '<i class="fas fa-basketball-ball"></i>',
+    '<i class="fas fa-dragon"></i>',
+    '<i class="fas fa-atom"></i>',
+    '<i class="fas fa-grin-beam"></i>',
+    '<i class="fas fa-hippo"></i>',
     '<i class="fas fa-home"></i>',
     '<i class="fas fa-heart"></i>',
     '<i class="fas fa-umbrella"></i>',
     '<i class="fas fa-tree"></i>',
-    '<i class="far fa-thumbs-down"></i>'
+    '<i class="fas fa-meteor"></i>'
 ]
 
 let selectedCards = []
@@ -389,7 +403,7 @@ function clickCardEvent(event) {
                         if (numFound === cards.length) {
                             if (currentState >= states.STEP7__add_win_condition &&
                                 currentState < states.STEP9__add_message) {
-                                alert('恭喜完成!!');
+                                    setTimeout("alert('恭喜完成!!');", 1);
                             }
                             wonGame = true;
 
