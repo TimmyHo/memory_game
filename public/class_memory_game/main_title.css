@@ -1,0 +1,24 @@
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+html.wf-loading * {
+    opacity: 0;
+}
+
+body {
+    height: 90%;
+    font-family: 'Noto Sans TC', sans-serif;
+    /* background: lightblue; */
+    margin: 0;
+    padding: 0;
+}
+
+.gameTitle {
+    /* text-align: center; */
+    /* font-size: 2.5rem; */
+    /* color: white; */
+    /* margin: 15px 0; */
+    /* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+}

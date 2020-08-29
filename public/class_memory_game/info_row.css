@@ -1,0 +1,93 @@
+
+.infoRow {
+    vertical-align: top;
+    text-align: center;
+    margin-bottom: 20px;
+    
+    line-height: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+}
+
+#soundButton {
+    display: inline-block;
+    padding: 0 20px; 
+    background: yellow;
+    width: 20px;
+    border: 2px solid black;  
+}
+
+#resetButton {
+    display: inline-block;
+    padding: 0 20px; 
+    background: skyblue;
+    width: 20px;
+    border: 2px solid black;
+    margin-left: 25px;
+}
+
+#message {
+    background: lightyellow;
+    display: inline-block;
+
+    width: 300px;
+    color: slategray;
+
+    border: 2px solid black;
+    margin-left: 25px;
+}
+
+#gameTime {
+    display: inline-block;
+    background: orange;
+    margin-left: 25px;
+    border: 2px solid black;
+    width: 90px;
+}
+
+#timeTaken {
+    margin-left: 10px;
+}
+
+#bestGameTime {
+    display: inline-block;
+    background: gray;
+    margin-left: 25px;
+    border: 2px solid black;
+    width: 90px;
+}
+
+#bestTimeTaken {
+    margin-left: 10px;
+}
+
+#bestGameTime.newBestTime {
+    color: darkgoldenrod;
+    background: white;
+    border: 2px solid darkgoldenrod;
+}
+
+
+
+/* @media (orientation: portrait) {
+    #message {
+        display: none;
+        margin: 0px;
+    }
+
+    #resetButton {
+        margin-left: 3px;
+    }
+
+    #gameTime {
+        margin-left: 3px;
+    }
+
+    #bestGameTime {
+        margin-left: 3px;
+    }
+
+    .infoRow {
+        margin-bottom: 5px;
+    }
+} */

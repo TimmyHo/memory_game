@@ -24,6 +24,32 @@ let icons = [
     '<i class="far fa-sad-cry"></i>'
 ]
 
+icons = [
+    '<i class="fas fa-baby"></i>',
+    '<i class="fas fa-basketball-ball"></i>',
+    '<i class="fas fa-cat"></i>',
+    '<i class="fab fa-earlybirds"></i>',
+    '<i class="far fa-dizzy"></i>',
+    '<i class="fas fa-dog"></i>',
+    '<i class="fas fa-hippo"></i>',
+    '<i class="fas fa-hiking"></i>',
+    '<i class="fas fa-monument"></i>',
+    '<i class="far fa-money-bill-alt"></i>',
+]
+
+icons = [
+    '<i class="fas fa-horse"></i>',
+    '<i class="fab fa-facebook-square"></i>',
+    '<i class="fas fa-bicycle"></i>',
+    '<i class="fas fa-bus"></i>',
+    '<i class="fas fa-fighter-jet"></i>',
+    '<i class="fas fa-home"></i>',
+    '<i class="fas fa-heart"></i>',
+    '<i class="fas fa-umbrella"></i>',
+    '<i class="fas fa-tree"></i>',
+    '<i class="far fa-thumbs-down"></i>'
+]
+
 let selectedCards = []
 let isFound = []
 let numFound = 0;
@@ -32,14 +58,15 @@ let gameStarted = false;
 let wonGame = false;
 let isShowing = false;
 
-
 let message = document.querySelector('#message')
 let audioFound = document.querySelector('#audioFound');
 let audioWrong = document.querySelector('#audioWrong');
 let audioWonGame = document.querySelector('#audioWonGame');
-let cancelAudioPlayback = false;
-let isSoundEnabled = true;
+let isSoundEnabled = false;
 
+let audioFoundTimeout;
+let audioWrongTimeout;
+let audioWonGameTimeout;
 let clearShowingCardsTimeout;
 
 let stopwatch;
@@ -47,9 +74,16 @@ let timeTaken = document.querySelector('#timeTaken');
 let timeTakenInMs = 0;
 let bestTimeValue;
 
-let soundButton = document.querySelector('#soundButton')
-let resetButton = document.querySelector('#resetButton')
+let soundButton = document.querySelector('#soundButton');
+let resetButton = document.querySelector('#resetButton');
 
+function generateDoubleArrWithFixedInd(arrLen) {
+    let arr = [];
+    for (let i = 0; i < arrLen * 2; i++) {
+        arr.push(Math.floor(i/2));
+    }
+    return arr;
+}
 
 function generateArrWithRandomInd(arrLen, numRand) {
     numsToPick = []
@@ -61,7 +95,7 @@ function generateArrWithRandomInd(arrLen, numRand) {
     for (let i = 0; i < arrLen; i++) {
         let ind = Math.floor(Math.random() * numsToPick.length);
         arr.push(numsToPick[ind]);
-        numsToPick.splice(ind,1);
+        numsToPick.splice(ind, 1);
     }
 
     return arr;
@@ -69,7 +103,7 @@ function generateArrWithRandomInd(arrLen, numRand) {
 
 // Given an array ie: [1,2,3,4,5], randomize it so it is like [3,1,5,4,2]
 function randomizeArray(arr) {
-    newArr = []
+    newArr = [];
     while (arr.length > 0) {
         let ind = Math.floor(Math.random() * arr.length);
         newArr.push(arr[ind]);
@@ -83,8 +117,9 @@ function resetGame() {
 
     timeTakenInMs = 0;
     timeTaken.innerHTML = "--";
-    
+
     bestGameTime.classList.remove('newBestTime');
+
 
     if (isSoundEnabled) {
         stopAudio();
@@ -96,19 +131,28 @@ function resetGame() {
 
 function newMemoryGame() {
     resetGameBoard();
+    
+
+    shouldGenerateFixed = true;
 
     wonGame = false;
     gameStarted = false;
 
-    arrInd = generateArrWithRandomInd(cards.length / 2, icons.length);
-    // want to have 2 of each card
-    arrInd = arrInd.concat([...arrInd]);
+    newArr = [];
+    if (shouldGenerateFixed) {
+        arrInd = generateDoubleArrWithFixedInd(10);
+        newArr = arrInd;
+        
+        newArr = randomizeArray(newArr); 
+    }
+    else {
+    //     arrInd = generateArrWithRandomInd(cards.length / 2, icons.length);
+            
+        //     //  want to have 2 of each card
+        //     newArr = arrInd.concat([...arrInd]);
 
-    // for (let i = 0; i < cards.length; i++) {
-    //     arrInd[i] = i % (cards.length / 2)
-    // }
-
-    newArr = randomizeArray(arrInd);    
+        //    newArr = randomizeArray(arrInd);   
+    } 
 
     for (let i = 0; i < cards.length; i++) {
         cards[i].innerHTML = icons[newArr[i]];
@@ -131,52 +175,6 @@ function resetGameBoard() {
     clearInterval(stopwatch);
 }
 
-function playFoundAudio() {
-    cancelAudioPlayback = false;
-    audioFound.play();
-    
-    setTimeout(function() {
-    
-        if (!cancelAudioPlayback) {
-            audioFound.pause();
-            audioFound.currentTime = 0;
-        }
-    },
-    1000);
-}
-
-function playWrongAudio() {
-    cancelAudioPlayback = false;
-    audioWrong.play();
-    setTimeout(function() {
-        if (!cancelAudioPlayback) {
-            audioWrong.pause();
-            audioWrong.currentTime = 0;
-        }
-    }, 500);
-}
-
-function playWonGameAudio() {
-    cancelAudioPlayback = false;
-    audioWonGame.play();
-        
-    // setTimeout(function() {
-    //     audioWonGame.pause();
-    //     audioWonGame.currentTime = 0;
-    // },
-    // 1000);  
-}
-
-function stopAudio() {
-    audioWrong.pause();
-    audioWrong.currentTime = 0;
-    audioFound.pause();
-    audioFound.currentTime = 0;
-    audioWonGame.pause();
-    audioWonGame.currentTime = 0;
-    cancelAudioPlayback = true;
-}
-
 function startGameTimer() {
     stopwatch = setInterval(function() {
         timeTakenInMs += 100;
@@ -189,6 +187,58 @@ function setNewBestTime() {
     bestTimeValue = timeTakenInMs;
     bestTimeTaken.innerHTML = (bestTimeValue / 1000).toFixed(1);
     bestGameTime.classList.add('newBestTime');
+}
+
+function toggleSound() {
+    isSoundEnabled = !isSoundEnabled;
+    updateSoundIcon();
+}
+
+function updateSoundIcon() {   
+    if (isSoundEnabled) {
+        soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+    }
+    else {
+        soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+function playFoundAudio() {
+    audioFound.play();
+    
+    audioFoundTimeout = setTimeout(function() {
+        audioFound.pause();
+        audioFound.currentTime = 0;
+    },
+    1000);
+}
+
+function playWrongAudio() {
+    audioWrong.play();
+
+    audioWrongTimeout = setTimeout(function() {
+        audioWrong.pause();
+        audioWrong.currentTime = 0;
+    }, 500);
+}
+
+function playWonGameAudio() {
+    audioWonGame.play();
+        
+    setTimeout(function() {
+        audioWonGame.pause();
+        audioWonGame.currentTime = 0;
+    },
+    1000);
+}
+
+function stopAudio() {
+    audioWrong.pause();
+    audioWrong.currentTime = 0;
+    audioFound.pause();
+    audioFound.currentTime = 0;
+    audioWonGame.pause();
+    audioWonGame.currentTime = 0;
 }
 
 function clearShowingCards() {
@@ -212,19 +262,20 @@ function clickCardEvent(event) {
         (selectedCards === 0 || selectedCards[0] !== this.id)) {    
 
         if (isSoundEnabled) {
+            clearInterval(audioWrongTimeout);
+            clearInterval(audioFoundTimeout);
             stopAudio();
-            cancelAudioPlayback = true;
         }
+    
 
         if (isShowing) {
             clearInterval(clearShowingCardsTimeout)
             clearShowingCards();
         }
 
-
-        selectedCards.push(this.id);
         message.innerHTML = "&nbsp;";
-
+    
+        selectedCards.push(this.id);
         let isMatch = true;
         for (let j = 1; j < selectedCards.length; j++) {
             if (cards[selectedCards[j]].innerHTML !== cards[selectedCards[0]].innerHTML) {
@@ -236,6 +287,7 @@ function clickCardEvent(event) {
         this.classList.add('selected');
         if (isMatch === false) {
             isShowing = true;
+            
             message.innerHTML = "可惜不一樣 :(";
 
             if (isSoundEnabled) {
@@ -253,22 +305,22 @@ function clickCardEvent(event) {
                 }
                 
                 selectedCards = [];
+
                 if (numFound === cards.length) {
                     wonGame = true;
-                    message.innerHTML = "恭喜完成!!"
 
-                    if (isSoundEnabled) {
-                        playWonGameAudio();
-                    }
+                    message.innerHTML = "恭喜完成!!"
                     clearInterval(stopwatch);
-                    
                     if (!bestTimeValue || timeTakenInMs < bestTimeValue) {
                         setNewBestTime();
                     }
+                    if (isSoundEnabled) {
+                        playWonGameAudio();
+                    }
                 }
                 else {
-                    message.innerHTML = "你好棒棒！"
-
+                    message.innerHTML = "你好棒棒";
+                    
                     if (isSoundEnabled) {
                         playFoundAudio();
                     }
@@ -278,28 +330,13 @@ function clickCardEvent(event) {
     }
 }
 
-
-function toggleSound() {
-    isSoundEnabled = !isSoundEnabled;
-    updateSoundIcon();
-}
-function updateSoundIcon() {
-    if (isSoundEnabled) {
-        soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-    }
-    else {
-        soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-    }
-}
-
-
-resetButton.addEventListener("click", resetGame);
-
 for (let i = 0; i < cards.length; i++) {
     cards[i].id = i;
     cards[i].addEventListener("click", clickCardEvent);
 }
 
-resetGame();
+resetButton.addEventListener("click", resetGame);
 
 soundButton.addEventListener("click", toggleSound);
+
+resetGame();
