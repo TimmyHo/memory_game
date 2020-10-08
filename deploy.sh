@@ -1,0 +1,1 @@
+gsutil -m cp -r ./public/* gs://memory-test.made-by-tim.com/
